@@ -1,0 +1,15 @@
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<div>
+    <span style="float:right">
+        {{#if username}}
+            {{username}}<a type="button" class="btn btn-dark"  href="/users/profile">Profil<span class="glyphicon glyphicon-log-out"></span></a>&nbsp
+            <a type="button" class="btn btn-dark"  href="/users/logout">Izpis<span class="glyphicon glyphicon-off"></span></a>&nbsp;
+        {{else}}
+            <a type="button" class="btn btn-dark"  href="/users/login">Vpis<span class="glyphicon glyphicon-log-in"></span></a>&nbsp;
+            <a type="button" class="btn btn-dark"  href="/users/register">Registracija<span class="glyphicon glyphicon-pencil"></span></a>
+        {{/if}}
+         <a type="button" class="btn btn-dark"  href="/">Domov<span class="glyphicon glyphicon-home"></span></a>
+    </span><br/>
+</div>
+
