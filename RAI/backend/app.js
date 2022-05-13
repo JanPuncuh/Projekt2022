@@ -5,7 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var mongoose = require('mongoose')
-var mongoDB = 'mongodb://127.0.0.1/projekt';
+//var mongoDB = 'mongodb://127.0.0.1/projekt';
+var mongoDB = "mongodb+srv://test:test@projekt.0habu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;

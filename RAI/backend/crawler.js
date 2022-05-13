@@ -5,14 +5,14 @@ const cheerio = require('cheerio');
 const getPostTitles = async () => {
 	try {
 		const { data } = await axios.get(
-			'https://www.promet.si/sl'
+			'https://www.promet.si/sl/stevci-prometa'
 			
 		);
 		const $ = cheerio.load(data);
 		const postTitles = [];
 		return data;
 
-		$('tr> td> span.ip').each((_idx, el) => {
+		$('div').each((_idx, el) => {
 			const postTitle = $(el).text()
 			postTitles.push(postTitle)
 		});
@@ -24,7 +24,13 @@ const getPostTitles = async () => {
 };
 
 getPostTitles()
-.then((postTitles) => console.log(postTitles));*/
+.then((postTitles) => console.log(postTitles));
+
+
+
+*/
+
+
 const puppeteer = require('puppeteer');
 
 (async function scrape() {
@@ -32,7 +38,7 @@ const puppeteer = require('puppeteer');
 
     const page = await browser.newPage();
    // await page.goto('https://quotes.toscrape.com/search.aspx');
-	await page.goto('https://www.promet.si/sl/stevci-prometa');
+	await page.goto('https://www.promet.si/sl/dogodki');
     //await page.waitForSelector('#author');
     //await page.select('#author', 'Albert Einstein');
 
