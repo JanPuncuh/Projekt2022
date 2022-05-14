@@ -2,10 +2,20 @@ var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
 
 var CestaSchema = new Schema({
-	'Longitude' : Number,
-	'Latitude' : Number,
-	'Altitude' : Number,
-	'user_id' : Number
+	'longitude' : Number,
+	'latitude' : Number,
+	'gyroscopeX' : Number,
+	'gyroscopeY' : Number,
+	'gyroscopeZ' : Number,
+
+	'accelerationX' : Number,
+	'accelerationY' : Number,
+	'accelerationZ' : Number,
+	'user_id' : String,
+	'timeStamp' : {
+		type: Date,
+		default: new Date()
+	}
 });
 
 module.exports = mongoose.model('Cesta', CestaSchema);
