@@ -51,15 +51,25 @@ module.exports = {
      * CestaController.create()
      */
     create: function (req, res) {
+        console.log(req.body);
         var Cesta = new CestaModel({
-			Longitude : req.body.Longitude,
-			Latitude : req.body.Latitude,
-			Altitude : req.body.Altitude,
+			longitude : req.body.longitude,
+			latitude : req.body.latitude,
+            
+            accelerationX : req.body.accelX,
+            accelerationY : req.body.accelY,
+            accelerationZ : req.body.accelZ,
+
+            gyroscopeX : req.body.gyroX,
+            gyroscopeY : req.body.gyroY,
+            gyroscopeZ : req.body.gyroZ,
+
 			user_id : req.body.user_id
         });
 
         Cesta.save(function (err, Cesta) {
             if (err) {
+                console.log(err);
                 return res.status(500).json({
                     message: 'Error when creating Cesta',
                     error: err
