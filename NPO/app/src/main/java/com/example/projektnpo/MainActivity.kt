@@ -1,5 +1,6 @@
 package com.example.projektnpo
 
+
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -15,14 +16,9 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.projektnpo.databinding.ActivityMainBinding
+import com.example.projektnpo.getMyLastLocation.Companion.PERMISSION_ID
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-
-
-import com.example.projektnpo.getMyLastLocation.Companion.PERMISSION_ID
-import java.time.LocalDateTime
-import java.util.*
-import kotlin.collections.HashMap
 
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
@@ -78,17 +74,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             sensorName + ": X: " + event.values[0] + "; Y: " + event.values[1] + "; Z: " + event.values[2] + ";"
         )*/
 
-        //trenutni čas
-        val timestamp = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            LocalDateTime.now()
-        }
-        else {
-            TODO("VERSION.SDK_INT < O")
-        }
-
-        //Log.d("TIME", timestamp.toString())
-
-
         if (event.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION) {
             binding.textView.text = event.values[0].toString()
             binding.textView2.text = event.values[1].toString()
@@ -131,7 +116,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
             Log.d(
                 "Tobiposlau?",
-                "Timestamp: " + timestamp.toString() + " Accelertation  x,y,z: " + binding.textView.text.toString() + " "
+                "Accelertation  x,y,z: " + binding.textView.text.toString() + " "
                         + binding.textView2.text.toString() + " " +
                         binding.textView3.text.toString() + "  ,  Gyroscope x,y,z:  " +
                         binding.textView4.text.toString() + " " +
@@ -159,7 +144,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 Response.ErrorListener {
                     Log.d(
                         "VREI",
-                        "That didnt wor"
+                        "That didnt work"
                     )
                 }) {
                 override fun getParams(): Map<String, String> {
@@ -205,5 +190,4 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             }
         }
     }
-
 }
