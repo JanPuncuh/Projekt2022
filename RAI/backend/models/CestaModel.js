@@ -15,7 +15,8 @@ var CestaSchema = new Schema({
 	'timeStamp' : {
 		type: Date,
 		default: new Date()
-	}
+	},
+	'uniqueID' : String
 });
 
 module.exports = mongoose.model('Cesta', CestaSchema);

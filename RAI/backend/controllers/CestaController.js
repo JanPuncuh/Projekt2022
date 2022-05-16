@@ -51,11 +51,11 @@ module.exports = {
      * CestaController.create()
      */
     create: function (req, res) {
-        console.log(req.body);
+        console.log(req.body.latitude + "  , " , req.body.longitude);
         var Cesta = new CestaModel({
 			longitude : req.body.longitude,
 			latitude : req.body.latitude,
-            
+
             accelerationX : req.body.accelX,
             accelerationY : req.body.accelY,
             accelerationZ : req.body.accelZ,
@@ -63,8 +63,10 @@ module.exports = {
             gyroscopeX : req.body.gyroX,
             gyroscopeY : req.body.gyroY,
             gyroscopeZ : req.body.gyroZ,
+            timeStamp : new Date(),
+			user_id : req.body.user_id,
 
-			user_id : req.body.user_id
+            uniqueID : req.body.uid
         });
 
         Cesta.save(function (err, Cesta) {
