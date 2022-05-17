@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var cors = require('cors');
 var mongoose = require('mongoose')
 //var mongoDB = 'mongodb://127.0.0.1/projekt';
 var mongoDB = "mongodb+srv://test:test@projekt.0habu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
@@ -28,6 +28,7 @@ var hbs = require('hbs');
 hbs.registerPartials(__dirname + "/views/partials");
 hbs.registerHelper("equal", require("handlebars-helper-equal"))
 
+app.use(cors());
 
 var session = require('express-session');
 var MongoStore = require('connect-mongo');
@@ -63,5 +64,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
 
 module.exports = app;

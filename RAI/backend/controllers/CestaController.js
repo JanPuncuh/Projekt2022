@@ -18,6 +18,13 @@ module.exports = {
                     error: err
                 });
             }
+            var temp=[ ]
+            Cestas=Cestas.filter((item)=>{
+            if(!temp.includes(item.latitude)){
+            temp.push(item.latitude)
+            return true;
+            }
+})
 
             return res.json(Cestas);
         });
@@ -51,7 +58,7 @@ module.exports = {
      * CestaController.create()
      */
     create: function (req, res) {
-        console.log(req.body.latitude + "  , " , req.body.longitude);
+        console.log(req.body.latitude + "  , " , req.body.longitude + "  id: ", req.body.uid );
         var Cesta = new CestaModel({
 			longitude : req.body.longitude,
 			latitude : req.body.latitude,
