@@ -1,6 +1,7 @@
 package com.example.projektnpo
 
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -8,25 +9,36 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.projektnpo.databinding.ActivityMainBinding
-import com.example.projektnpo.getMyLastLocation.Companion.PERMISSION_ID
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.example.projektnpo.utils.PermissionUtils
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
     var iterator: Int = 0
+    var uniqueID: String=""
     lateinit var sensorManager: SensorManager
     lateinit var accelerometer: Sensor
     lateinit var gyroscope: Sensor
-
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 999
+    }
     private var fusedLocationClient: FusedLocationProviderClient? = null
 
     private lateinit var binding: ActivityMainBinding
@@ -40,7 +52,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-
+        uniqueID= UUID.randomUUID().toString()
         //linear acceleration odšteje vektor gravitacije
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
@@ -55,11 +67,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onPause() {
         super.onPause()
         sensorManager.unregisterListener(this)
+        uniqueID = ""
     }
 
     override fun onResume() {
         super.onResume()
-
+        uniqueID = UUID.randomUUID().toString()
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL)
 
@@ -91,28 +104,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         //da mal počaka med pošiljanjem
         if (iterator == 100) {
-            val gtml = getMyLastLocation(this)
-            gtml.verifyGooglePlayServices()
-            gtml.getLastLocation { result: resultLocatioinRequest ->
 
-                when (result) {
-                    is resultLocatioinRequest.Sucesso -> {
-                        val address = (result as resultLocatioinRequest.Sucesso).adress
-
-                        Log.d(
-                            "Errorji",
-                            "Baje da so koordinate " + address.postalCode + " ++ " + address.latitude.toString() + " , " + address.longitude.toString()
-                        )
-                        binding.textView7.text = address.latitude.toString()
-                        binding.textView8.text = address.longitude.toString()
-                        //  binding.textView9.text = address.postalCode
-                    }
-                    is resultLocatioinRequest.Erro -> {
-                        val msg = (result as resultLocatioinRequest.Erro).msg
-                        Log.d("Errorji", msg)
-                    }
-                }
-            }
 
             Log.d(
                 "Tobiposlau?",
@@ -122,16 +114,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                         binding.textView4.text.toString() + " " +
                         binding.textView5.text.toString() + " " +
                         binding.textView6.text.toString() + " ." +
-                        "\n Lokacija " + binding.textView7.text.toString() + "  , " + binding.textView8.text.toString()
+                        "\n Lokacija " + binding.textView7.text.toString() + "  , " + binding.textView8.text.toString() + " uniqueID: " +uniqueID
 
             )
-            //  postData("xd");
             iterator = 0
 
             if (binding.textView7.text.toString() == "TextView")
                 return
             val queue = Volley.newRequestQueue(this)
-            val url = "http://46.164.31.241:8080/cesta"
+            val url = "http://146.212.216.121:8080/cesta"
 
             val stringRequest: StringRequest = object : StringRequest(
                 Method.POST, url,
@@ -161,6 +152,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     paramV["latitude"] = binding.textView7.text.toString();
                     paramV["longitude"] = binding.textView8.text.toString();
 
+                    paramV["uid"] = uniqueID;
+
                     return paramV
                 }
             }
@@ -172,22 +165,97 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         return
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_ID) {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                Log.i(
-                    "Errorji", "\n" +
-                            "Dovoljenje za dostop do lokacije je odobreno"
-                )
+    private fun setUpLocationListener() {
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        // for getting the current location update after every 2 seconds with high accuracy
+        val locationRequest = LocationRequest().setInterval(1000).setFastestInterval(2000)
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        Looper.myLooper()?.let {
+            fusedLocationProviderClient.requestLocationUpdates(
+                locationRequest,
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        super.onLocationResult(locationResult)
+                        for (location in locationResult.locations) {
+                            binding.textView7.text = location.latitude.toString()
+                            binding.textView8.text = location.longitude.toString()
+                            Log.d("lokacija", "Lokacija: " + location.latitude.toString() + " , " +location.longitude.toString())
+
+                        }
+                        // Few more things we can do here:
+                        // For example: Update the location of user on server
+                    }
+                },
+                it
+            )
+        }
+    }
+    override fun onStart() {
+        super.onStart()
+        when {
+            PermissionUtils.isAccessFineLocationGranted(this) -> {
+                when {
+                    PermissionUtils.isLocationEnabled(this) -> {
+                        setUpLocationListener()
+                    }
+                    else -> {
+                        PermissionUtils.showGPSNotEnabledDialog(this)
+                    }
+                }
             }
-            else {
-                finish()
+            else -> {
+                PermissionUtils.requestAccessFineLocationPermission(
+                    this,
+                    LOCATION_PERMISSION_REQUEST_CODE
+                )
             }
         }
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    when {
+                        PermissionUtils.isLocationEnabled(this) -> {
+                            setUpLocationListener()
+                        }
+                        else -> {
+                            PermissionUtils.showGPSNotEnabledDialog(this)
+                        }
+                    }
+                } else {
+                    Toast.makeText(
+                        this,
+                        getString(0),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+
 }
