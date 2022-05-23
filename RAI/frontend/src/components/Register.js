@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import React, { Component }  from 'react';
 function Register() {
     const [username, setUsername] = useState([]);
     const [password, setPassword] = useState([]);

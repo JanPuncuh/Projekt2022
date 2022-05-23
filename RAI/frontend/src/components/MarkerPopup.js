@@ -9,7 +9,7 @@ const MarkerPopup = (props) => {
       'width': '200px'
       }}><p style={{
       'white-space': 'pre-wrap'
-      }}>User: {props.data.user_id  + "\nLatitude: "  +props.data.latitude + ",\nLongitude: "+  props.data.longitude  + "\nTimestamp: " + props.data.timeStamp }</p></div>
+      }}>User: {props.data.user_id  + "\nLatitude: "  +props.data.latitude + ",\nLongitude: "+  props.data.longitude  + "\nTimestamp: " + props.data.timeStamp  + "\nAccelZ: " + props.data.accelerationZ}</p></div>
   </Popup>);
 };
 

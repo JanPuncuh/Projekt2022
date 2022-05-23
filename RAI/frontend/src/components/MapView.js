@@ -20,7 +20,7 @@ class MapView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentLocation: [46.15,14.72834872447777 ], // EDIT coordinates to re-center map
+      currentLocation: [46.15, 14.52834872447777 ], // EDIT coordinates to re-center map
       zoom: 9,  // EDIT from 1 (zoomed out) to 18 (zoomed in)
 
     }

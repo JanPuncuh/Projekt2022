@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { UserContext } from '../userContext';
 import { Navigate } from 'react-router-dom';
-
+import React, { Component }  from 'react';
 function Login(){
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
