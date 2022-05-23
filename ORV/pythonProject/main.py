@@ -192,14 +192,62 @@ def mergeLBPandHOG(LBP, HOG):
     return np.concatenate((LBP, HOG))
 
 
-img = cv2.imread(r'C:\Users\janpu\Pictures\muc.jpg')
-img = cv2.resize(img, (200, 200))
-testLBP, test = LBP(img)
+#img = cv2.imread(r'C:\Users\janpu\Pictures\muc.jpg')
+#img = cv2.resize(img, (200, 200))
+#testLBP, test = LBP(img)
 # histogram = cv2.calcHist(test, [0], None, [256], [0, 256])
-cv2.waitKey(0)
+#cv2.waitKey(0)
 
-testHOG = HOG(img)
+#testHOG = HOG(img)
 
-testLBPHOG = mergeLBPandHOG(testLBP, testHOG)
+#testLBPHOG = mergeLBPandHOG(testLBP, testHOG)
 
+# cv2.destroyAllWindows()
+
+cascPath = r"haarcascade_frontalface_default.xml"
+faceCascade = cv2.CascadeClassifier(cascPath)
+
+video_capture = cv2.VideoCapture(0)
+
+while True:
+    # Capture frame-by-frame
+    ret, frame = video_capture.read()
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    faces = faceCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(30, 30),
+        flags=cv2.CASCADE_SCALE_IMAGE
+    )
+
+    #print(faces)
+
+    # Draw a rectangle around the faces
+    for (x, y, w, h) in faces:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    # Display the resulting frame
+    cv2.imshow('Video', frame)
+
+    # če najde obraz ga prikazuje na manjši slikci
+    try:
+        fx = faces[0][0]
+        fy = faces[0][1]
+        fw = faces[0][2]
+        fh = faces[0][3]
+        faceFrame = frame[fy:fy + fh, fx:fx + fw]
+        cv2.imshow("face", faceFrame)
+    except:
+        print("No face detected")
+
+    # todo iz faceFrame izlušči LBP in HOG??? sej ne vem ka delam tbh
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# When everything is done, release the capture
+video_capture.release()
 cv2.destroyAllWindows()
