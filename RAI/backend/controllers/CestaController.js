@@ -1,4 +1,5 @@
 var CestaModel = require('../models/CestaModel.js');
+var scrapperModel = require('../models/scrapperModel');
 
 const axios = require("axios")
 const cheerio = require("cheerio")
@@ -44,21 +45,42 @@ module.exports = {
                 //console.log(html)
                 const $ = cheerio.load(html)
 
+                //pobriše vse v bazi (da ni duplicatov)
+                scrapperModel.deleteMany({})
                 //sam spodn table
                 //$('div.table-wrapper.table-rounded.table-scroll-y').find("tr").each((idx, ref) => {
 
                 //oba table
                 $('table').find("tr").each((idx, ref) => {
                     const elem = $(ref);
-
                     const splitElem = elem.text().split(',')
                     const road = splitElem[0]
                     //brezveze splitat, ker so nekonstantni podatki (kagdaj ni oznake ceste al pa vejca fali...)
                     //al pa bi mogu z regexom preverjat
 
+                    //ustvari objekt
+                    var roadInfo = new scrapperModel({
+                        info: elem.text(),
+                        date: Date.now(),
+                    });
+
+                    console.log(roadInfo)
+
+                    //shrani v bazo
+                    /*roadInfo.save(function (err, roadInfo) {
+                        if (err) {
+                            console.log(err);
+                            return res.status(500).json({
+                                message: 'Error when creating roadInfo',
+                                error: err
+                            });
+                        }
+                        return res.status(201).json(roadInfo);
+                    });*/
+
                     //todo model in shranuj v bazo (kot 1 podatek?)
 
-                    console.log(elem.text())
+                    //console.log(elem.text())
                 });
             }).catch(err => console.log(err))
     },
