@@ -7,7 +7,7 @@ var CestaController = require('../controllers/CestaController.js');
  */
 router.get('/', CestaController.list);
 router.get('/scrapper', CestaController.scrape);
-//router.get('/scrapper/list', CestaController.scrape);
+router.get('/scrapper/list', CestaController.listScrapper);
 
 /*
  * GET

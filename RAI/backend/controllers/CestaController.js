@@ -34,6 +34,19 @@ module.exports = {
         });
     },
 
+    listScrapper: function (req, res) {
+        scrapperModel.find(function (err, scrapper) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting scrapped info.',
+                    error: err
+                });
+            }
+
+            return res.json(scrapper);
+        });
+    },
+
     scrape: function (req, res) {
         res.render('index', {title: 'Express'});
 
@@ -45,8 +58,11 @@ module.exports = {
                 //console.log(html)
                 const $ = cheerio.load(html)
 
+                let roadInfos = []
+
                 //pobriše vse v bazi (da ni duplicatov)
                 scrapperModel.deleteMany({})
+
                 //sam spodn table
                 //$('div.table-wrapper.table-rounded.table-scroll-y').find("tr").each((idx, ref) => {
 
@@ -64,6 +80,8 @@ module.exports = {
                         date: Date.now(),
                     });
 
+                    roadInfos.push(roadInfo)
+
                     console.log(roadInfo)
 
                     //shrani v bazo
@@ -78,10 +96,9 @@ module.exports = {
                         return res.status(201).json(roadInfo);
                     });*/
 
-                    //todo model in shranuj v bazo (kot 1 podatek?)
-
                     //console.log(elem.text())
                 });
+                console.log(roadInfos.length)
             }).catch(err => console.log(err))
     },
 
