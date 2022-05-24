@@ -35,6 +35,7 @@ module.exports = {
     },
 
     listScrapper: function (req, res) {
+        //najde najnovejšega
         scrapperModel.find(function (err, scrapper) {
             if (err) {
                 return res.status(500).json({
@@ -44,8 +45,7 @@ module.exports = {
             }
 
             return res.json(scrapper);
-        }).limit(1);
-        //to pol spremen
+        }).sort({date: -1}).limit(1);
     },
 
     scrape: function (req, res) {
@@ -72,31 +72,8 @@ module.exports = {
                     //brezveze splitat, ker so nekonstantni podatki (kagdaj ni oznake ceste al pa vejca fali...)
                     //al pa bi mogu z regexom preverjat
 
-                    //ustvari objekt
-                    /*var roadInfo = new scrapperModel({
-                        info: elem.text(),
-                        date: Date.now(),
-                    });*/
-
                     roadInfos.push(elem.text())
-
-                    //console.log(roadInfo)
-
-                    //shrani v bazo
-                    /*roadInfo.save(function (err, roadInfo) {
-                        if (err) {
-                            console.log(err);
-                            return res.status(500).json({
-                                message: 'Error when creating roadInfo',
-                                error: err
-                            });
-                        }
-                        return res.status(201).json(roadInfo);
-                    });*/
-
-                    //console.log(elem.text())
                 });
-                //console.log(roadInfos)
                 console.log(roadInfos)
 
                 var roadInfo = new scrapperModel({
@@ -104,6 +81,8 @@ module.exports = {
                     date: Date.now(),
                 });
 
+                //kdaj dela scrapper, kdaj pa ne??
+                //shrani v bazo sam takrat ko dela
                 if (roadInfos.length > 10) {
                     roadInfo.save(function (err, roadInfo) {
                         if (err) {
@@ -117,7 +96,7 @@ module.exports = {
                     })
                 }
 
-                console.log(roadInfo)
+                //console.log(roadInfo)
                 console.log(roadInfos.length)
 
             }).catch(err => console.log(err))
