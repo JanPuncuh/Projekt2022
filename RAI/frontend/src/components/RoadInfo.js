@@ -5,8 +5,12 @@ function RoadInfo(props) {
 
     return (
         <div>
-            <p>{props.road.info}</p>
-            <hr/>
+            {props.road.info.map((roadInfo) =>
+                <>
+                    <hr/>
+                    <p>{roadInfo}</p>
+                </>
+            )}
         </div>
     )
 }

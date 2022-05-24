@@ -1,4 +1,3 @@
-//todo prikaže stanje cest
 import React, {useState, useEffect} from 'react';
 import RoadInfo from './RoadInfo';
 
@@ -22,9 +21,9 @@ function RoadInfos() {
     }, []);
 
     return (
-        <div>
+        <>
             {roads.map(road => (<RoadInfo road={road} key={road._id}/>))}
-        </div>
+        </>
     );
 }
 

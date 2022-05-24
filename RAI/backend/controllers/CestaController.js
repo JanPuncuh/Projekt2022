@@ -44,11 +44,12 @@ module.exports = {
             }
 
             return res.json(scrapper);
-        });
+        }).limit(1);
+        //to pol spremen
     },
 
     scrape: function (req, res) {
-        res.render('index', {title: 'Express'});
+        //return res.render('index', {title: 'Express'});
 
         const url = "https://www.24ur.com/novice/ceste"
 
@@ -59,9 +60,6 @@ module.exports = {
                 const $ = cheerio.load(html)
 
                 let roadInfos = []
-
-                //pobriše vse v bazi (da ni duplicatov)
-                scrapperModel.deleteMany({})
 
                 //sam spodn table
                 //$('div.table-wrapper.table-rounded.table-scroll-y').find("tr").each((idx, ref) => {
@@ -106,21 +104,25 @@ module.exports = {
                     date: Date.now(),
                 });
 
-                roadInfo.save(function (err, roadInfo) {
-                    if (err) {
-                        console.log(err)
-                        return res.status(500).json({
-                            message: 'Error when creating roadInfo',
-                            error: err
-                        });
-                    }
-                    return res.status(201)//.json(roadInfo);
-                })
+                if (roadInfos.length > 10) {
+                    roadInfo.save(function (err, roadInfo) {
+                        if (err) {
+                            console.log(err)
+                            return res.status(500).json({
+                                message: 'Error when creating roadInfo',
+                                error: err
+                            });
+                        }
+                        return res.status(201)//.json(roadInfo);
+                    })
+                }
 
                 console.log(roadInfo)
                 console.log(roadInfos.length)
 
             }).catch(err => console.log(err))
+
+        return res.render('index', {title: 'Express'});
     },
 
     /**
