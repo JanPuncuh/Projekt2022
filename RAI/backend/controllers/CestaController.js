@@ -75,14 +75,14 @@ module.exports = {
                     //al pa bi mogu z regexom preverjat
 
                     //ustvari objekt
-                    var roadInfo = new scrapperModel({
+                    /*var roadInfo = new scrapperModel({
                         info: elem.text(),
                         date: Date.now(),
-                    });
+                    });*/
 
-                    roadInfos.push(roadInfo)
+                    roadInfos.push(elem.text())
 
-                    console.log(roadInfo)
+                    //console.log(roadInfo)
 
                     //shrani v bazo
                     /*roadInfo.save(function (err, roadInfo) {
@@ -98,7 +98,28 @@ module.exports = {
 
                     //console.log(elem.text())
                 });
+                //console.log(roadInfos)
+                console.log(roadInfos)
+
+                var roadInfo = new scrapperModel({
+                    info: roadInfos,
+                    date: Date.now(),
+                });
+
+                roadInfo.save(function (err, roadInfo) {
+                    if (err) {
+                        console.log(err)
+                        return res.status(500).json({
+                            message: 'Error when creating roadInfo',
+                            error: err
+                        });
+                    }
+                    return res.status(201)//.json(roadInfo);
+                })
+
+                console.log(roadInfo)
                 console.log(roadInfos.length)
+
             }).catch(err => console.log(err))
     },
 
