@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
 
         //da mal počaka med pošiljanjem
-        if (iterator == 100) {
+        if (iterator == 300) {
 
 
             Log.d(
