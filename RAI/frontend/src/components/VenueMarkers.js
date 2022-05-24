@@ -17,35 +17,38 @@ const VenueMarkers = (props) => {
 
    var VenueLocationIcon = L.icon({
      iconUrl: require('../assets/blue.svg'),
-    // iconRetinaUrl: require('../assets/venue_location_icon.svg'),
      iconAnchor: null,
-     shadowUrl: null,
-     shadowSize: null,
-     shadowAnchor: null,
-     iconSize: [35, 35],
+     iconSize: [27, 27],
      className: 'leaflet-venue-icon'
    });
 
    var VenueLocationIcon2 = L.icon({
     iconUrl: require('../assets/red.svg'),
-   // iconRetinaUrl: require('../assets/venue_location_icon.svg'),
     iconAnchor: null,
-    shadowUrl: null,
-    shadowSize: null,
-    shadowAnchor: null,
-    iconSize: [35, 35],
+    iconSize: [27, 27],
     className: 'leaflet-venue-icon'
   });
-   
+  var VenueLocationIcon3 = L.icon({
+    iconUrl: require('../assets/orange.svg'),
+    iconAnchor: null,
+    iconSize: [27, 27],
+    className: '2leaflet-venue-icon'
+  });
+
 
   const markers = data.map((venue, index) => (
 
-    parseFloat(venue.accelerationZ ) > 0.4 || parseFloat(venue.accelerationZ ) < -0.4? 
+    parseFloat(venue.accelerationZ ) > 2 || parseFloat(venue.accelerationZ ) < -2? 
 <Marker key={index} position={[ venue.latitude, venue.longitude]} icon={VenueLocationIcon2} >
 <MarkerPopup data={venue}/>
 </Marker> 
 : 
-    <Marker key={index} position={[ venue.latitude, venue.longitude]} icon={VenueLocationIcon} >
+parseFloat(venue.accelerationZ ) > 1.25 || parseFloat(venue.accelerationZ ) < -1.25? 
+<Marker key={index} position={[ venue.latitude, venue.longitude]} icon={VenueLocationIcon3} >
+<MarkerPopup data={venue}/>
+</Marker> 
+:
+<Marker key={index} position={[ venue.latitude, venue.longitude]} icon={VenueLocationIcon} >
       <MarkerPopup data={venue}/>
     </Marker>
   ));
