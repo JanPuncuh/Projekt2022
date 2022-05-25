@@ -11,11 +11,13 @@ function Header(props) {
                     {context => (
                         context.user ?
                             <>
+                                <li><Link to='/'>Domov</Link></li>
                                 <li><Link to='/sessions'>Moje Vožnje</Link></li>
                                 <li><Link to='/logout'>Odjava</Link></li>
                             </>
                         :
                             <>
+                                <li><Link to='/'>Domov</Link></li>
                                 <li><Link to='/login'>Prijava</Link></li>
                                 <li><Link to='/register'>Registracija</Link></li>
                             </>

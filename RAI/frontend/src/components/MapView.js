@@ -30,20 +30,25 @@ class MapView extends Component {
         const queryParams = new URLSearchParams(window.location.search)
         const indexFromURL = queryParams.get("id")
         const {currentLocation, zoom} = this.state;
-
+        console.log(indexFromURL);
         return (
-           
+            indexFromURL != undefined ? 
             <Map center={currentLocation} zoom={zoom}>
-           
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
-
-                <Markers venues={indexFromURL} />
-               
-</Map>
-
+                <Markers venues={indexFromURL} />             
+            </Map>
+:             
+<h1>Zadnja pot.
+<Map center={currentLocation} zoom={zoom}>
+    <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+    />
+    <Markers venues={indexFromURL} />             
+</Map></h1>
 
         );
     }

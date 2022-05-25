@@ -234,18 +234,46 @@ module.exports = {
         });
         
     },
+    sessionLast: function (req, res) {
+        CestaModel.findOne({}, {}, { sort: { 'timeStamp' : -1 } }, function(err, post) {
+            console.log( post.uniqueID );
+
+ 
+            CestaModel.find({uniqueID: post.uniqueID},function (err, session) {
+               if (err) {
+                   return res.status(500).json({
+                       message: 'Error when getting session info.',
+                       error: err
+                   });
+               }
+               return res.json(session);
+           });
+
+
+
+          });
+
+ 
+ 
+        
+    },
      sessions: function (req, res) {
         var id = req.params.id;
         console.log(id);
-         CestaModel.find({user_id: id})
-            .distinct('uniqueID')
-            .exec(function (err, sessions) {
+         CestaModel.find({user_id: id},function (err, sessions) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting sessions info.',
                     error: err
                 });
             }
+            var temp = []
+            sessions = sessions.filter((item) => {
+                if (!temp.includes(item.uniqueID)) {
+                    temp.push(item.uniqueID)
+                    return true;
+                }
+            })
            // console.log(sessions);
            return res.json(sessions);
         });

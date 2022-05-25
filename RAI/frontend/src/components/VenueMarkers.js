@@ -7,9 +7,16 @@ import L from 'leaflet';
 const VenueMarkers = (props) => {
     const {venues} = props;
     const [data, setData] = useState([]);
+    
+    var ip ="";
+    venues != null ? ip = "http://146.212.216.121:8080/cesta/session/"+venues
+     : ip = "http://146.212.216.121:8080/cesta/session/last";
+    
+
     useEffect(function () {
         const getData = async function () {
-            const res = await fetch("http://146.212.216.121:8080/cesta/session/"+venues);
+        
+            const res = await fetch(ip);
             const data = await res.json();
             setData(data);
         }

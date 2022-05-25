@@ -19,7 +19,7 @@ function Sessions(props){
 
     return(
         <div>
-            <h3>Vožnje:</h3>
+            <h3>Moje vožnje:</h3>
             <ul>
                 {sessions.map(session=>(<Session session={session} key={session.uniqueID}></Session>))}
                 
