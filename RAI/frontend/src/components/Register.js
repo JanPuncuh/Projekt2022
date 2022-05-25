@@ -8,9 +8,8 @@ function Register() {
 
     async function Register(e){
         e.preventDefault();
-        const res = await fetch("http://localhost:3001/users", {
+        const res = await fetch("http://146.212.216.121:8080/users", {
             method: 'POST',
-            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 email: email,
@@ -20,7 +19,7 @@ function Register() {
         });
         const data = await res.json();
         if(data._id !== undefined){
-            window.location.href="/";
+            window.location.href="/sessions";
         }
         else{
             setUsername("");

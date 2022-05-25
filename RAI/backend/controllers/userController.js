@@ -40,7 +40,8 @@ module.exports = {
                 req.session.userId = user._id;
                 req.session.username = user.username;
                 console.log("Prijava, "  + req.session.username);
-                return res.redirect('/');
+               // return res.redirect('/');
+               return res.status(201).json(user);
             }
         });
     },
@@ -113,8 +114,8 @@ module.exports = {
                     error: err
                 });
             }
-            //return res.status(201).json(user);
-            return res.redirect('/');
+            return res.status(201).json(user);
+            //return res.redirect('/'); zogirkometiraj je dallo andriod
 
         });
     },

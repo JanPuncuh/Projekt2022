@@ -9,6 +9,10 @@ router.get('/', CestaController.list);
 router.get('/scrapper', CestaController.scrape);
 router.get('/scrapper/list', CestaController.listScrapper);
 
+
+router.get('/session/:id', CestaController.session);
+
+router.get('/sessions/:id', CestaController.sessions);
 /*
  * GET
  */

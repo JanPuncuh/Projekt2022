@@ -9,7 +9,7 @@ const VenueMarkers = (props) => {
     const [data, setData] = useState([]);
     useEffect(function () {
         const getData = async function () {
-            const res = await fetch("http://146.212.216.121:8080/cesta");
+            const res = await fetch("http://146.212.216.121:8080/cesta/session/"+venues);
             const data = await res.json();
             setData(data);
         }
@@ -35,6 +35,8 @@ const VenueMarkers = (props) => {
         iconSize: [27, 27],
         className: '2leaflet-venue-icon'
     });
+
+
 
 
     const markers = data.map((venue, index) => (

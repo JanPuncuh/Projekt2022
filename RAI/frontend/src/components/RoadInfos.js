@@ -5,11 +5,11 @@ function RoadInfos() {
     const [roads, setRoads] = useState([]);
 
     const scrapInfo = async function () {
-        const res = await fetch("http://localhost:3001/cesta/scrapper");
+        const res = await fetch("http://146.212.216.121:8080/cesta/scrapper");
     }
 
     const getRoads = async function () {
-        const res = await fetch("http://localhost:3001/cesta/scrapper/list");
+        const res = await fetch("http://146.212.216.121:8080/cesta/scrapper/list");
         const data = await res.json();
         console.log(data)
         setRoads(data);

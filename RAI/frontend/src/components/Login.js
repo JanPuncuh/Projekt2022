@@ -10,9 +10,8 @@ function Login(){
 
     async function Login(e){
         e.preventDefault();
-        const res = await fetch("http://localhost:3001/users/login", {
+        const res = await fetch("http://146.212.216.121:8080/users/login", {
             method: "POST",
-            credentials: "include",
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 username: username,
@@ -22,6 +21,7 @@ function Login(){
         const data = await res.json();
         if(data._id !== undefined){
             userContext.setUserContext(data);
+            window.location.href="/sessions";
         } else {
             setUsername("");
             setPassword("");
