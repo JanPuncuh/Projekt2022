@@ -20,18 +20,14 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.projektnpo.databinding.ActivityMainBinding
-import com.google.android.gms.location.*
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
 import com.example.projektnpo.utils.PermissionUtils
+import com.google.android.gms.location.*
 import java.util.*
-import kotlin.collections.HashMap
 
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
     var iterator: Int = 0
+    var id: String = "";
     var uniqueID: String=""
     lateinit var sensorManager: SensorManager
     lateinit var accelerometer: Sensor
@@ -45,7 +41,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        val b = intent.extras
+        id = b!!.getString("user_id").toString()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -140,7 +137,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 }) {
                 override fun getParams(): Map<String, String> {
                     val paramV: MutableMap<String, String> = HashMap()
-                    paramV["user_id"] = "Vrbko";
+                    paramV["user_id"] = id;
                     paramV["gyroX"] = binding.textView4.text.toString();
                     paramV["gyroY"] = binding.textView5.text.toString();
                     paramV["gyroZ"] = binding.textView6.text.toString();

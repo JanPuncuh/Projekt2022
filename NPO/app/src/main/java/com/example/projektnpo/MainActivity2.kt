@@ -11,7 +11,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.projektnpo.databinding.ActivityMain2Binding
 import com.example.projektnpo.databinding.ActivityMainBinding
-
+///LOGIN
 class MainActivity2 : AppCompatActivity() {
     private lateinit var binding: ActivityMain2Binding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,17 +29,17 @@ class MainActivity2 : AppCompatActivity() {
                 Toast.makeText(this@MainActivity2, "Uspešna prijava", Toast.LENGTH_SHORT).show();
                 Log.d(
 
-                    "RegistracijaGood",
+                    "Login",
                     "Response is: ${response.substring(0, response.length)}"
                 )
                 val intent = Intent(this, MainActivity::class.java)
-
+                intent.putExtra("user_id", binding.editTextTextPersonName.text.toString());
                 startActivity(intent)
             },
             Response.ErrorListener {
                 Toast.makeText(this@MainActivity2, "Neuspešna prijava", Toast.LENGTH_SHORT).show();
                 Log.d(
-                    "RegistracijaNotGood:)",
+                    "LoginNotGood:)",
                     "That didnt work" + it.toString()
                 )
             }) {
