@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import math
+import os
 
 
 # import tensorflow as tf
@@ -192,17 +193,16 @@ def mergeLBPandHOG(LBP, HOG):
     return np.concatenate((LBP, HOG))
 
 
-#img = cv2.imread(r'C:\Users\janpu\Pictures\muc.jpg')
-#img = cv2.resize(img, (200, 200))
-#testLBP, test = LBP(img)
-# histogram = cv2.calcHist(test, [0], None, [256], [0, 256])
-#cv2.waitKey(0)
+def saveFaceToDataset():
+    filename = './dataset/Jan' + str(len(os.listdir('./dataset/'))) + '.jpg'
 
-#testHOG = HOG(img)
+    # print(len(os.listdir('./dataset/')))
+    # print(filename)
 
-#testLBPHOG = mergeLBPandHOG(testLBP, testHOG)
+    # če je v bazi manj kot 100 slikc jo shrani
+    if len(os.listdir('./dataset/')) < 300:
+        cv2.imwrite(filename, faceFrame)
 
-# cv2.destroyAllWindows()
 
 cascPath = r"haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
@@ -223,14 +223,14 @@ while True:
         flags=cv2.CASCADE_SCALE_IMAGE
     )
 
-    #print(faces)
-
     # Draw a rectangle around the faces
-    for (x, y, w, h) in faces:
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    # for (x, y, w, h) in faces:
+    #    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
     # Display the resulting frame
     cv2.imshow('Video', frame)
+
+    faceFrame = None
 
     # če najde obraz ga prikazuje na manjši slikci
     try:
@@ -239,11 +239,13 @@ while True:
         fw = faces[0][2]
         fh = faces[0][3]
         faceFrame = frame[fy:fy + fh, fx:fx + fw]
+        faceFrame = cv2.resize(faceFrame, (200, 200))
         cv2.imshow("face", faceFrame)
     except:
         print("No face detected")
 
-    # todo iz faceFrame izlušči LBP in HOG??? sej ne vem ka delam tbh
+    if faceFrame is not None:
+        saveFaceToDataset()
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
@@ -251,3 +253,24 @@ while True:
 # When everything is done, release the capture
 video_capture.release()
 cv2.destroyAllWindows()
+
+# matrika velikosti slik
+
+# y št slik
+# x lbp hog
+
+# fukneš v strojno učenje
+
+# svm sklearn
+# c parameter
+# liner ali lbf kernel
+# gamma
+# probability
+
+# x
+# clf = makepipeline
+# clf.fit
+# clf.predict(slikca)
+#
+#
+# hog blocksize je lhka const
