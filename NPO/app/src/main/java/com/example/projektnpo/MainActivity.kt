@@ -43,13 +43,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         val b = intent.extras
         id = b!!.getString("user_id").toString()
+        uniqueID = b!!.getString("uuid").toString()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        uniqueID= UUID.randomUUID().toString()
         //linear acceleration odšteje vektor gravitacije
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)

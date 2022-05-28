@@ -15,6 +15,8 @@ db.on('error', console.error.bind(console, 'MongoDB connection error'))
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/userRoutes');
 var cestaRouter = require('./routes/CestaRoutes');
+var photoRouter = require('./routes/photoRoutes');
+
 
 
 var app = express();
@@ -40,14 +42,16 @@ app.use(session({
 }));
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.json({limit:'50mb'})); // for incoming Request Object as json
+
+app.use(express.urlencoded({limit:'50mb', extended: true }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/cesta', cestaRouter);
+app.use('/photo', photoRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -66,5 +70,5 @@ app.use(function(err, req, res, next) {
 });
 
 
-
 module.exports = app;
+

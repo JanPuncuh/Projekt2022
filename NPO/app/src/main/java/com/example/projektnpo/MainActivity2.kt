@@ -32,7 +32,7 @@ class MainActivity2 : AppCompatActivity() {
                     "Login",
                     "Response is: ${response.substring(0, response.length)}"
                 )
-                val intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(this, MainActivity4::class.java)
                 intent.putExtra("user_id", binding.editTextTextPersonName.text.toString());
                 startActivity(intent)
             },
