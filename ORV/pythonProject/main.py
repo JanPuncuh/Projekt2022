@@ -230,6 +230,7 @@ datasetLabels = []
 for faceImage in os.listdir('./dataset'):
     faceImage = "./dataset/" + faceImage
     img = cv2.imread(faceImage)
+    img = cv2.resize(img, (64, 64))
 
     # 0 Jan
     # 1 Rene
@@ -252,6 +253,7 @@ testTrain = []
 # vsako testno sliko da v testno množico
 for faceImage in os.listdir(r'C:/Users/janpu/Desktop/train'):
     test = cv2.imread(r'C:/Users/janpu/Desktop/train/' + faceImage)
+    test = cv2.resize(test, (64, 64))
     test = LBPHOG(test)
     testTrain.append(test)
 
