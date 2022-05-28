@@ -87,7 +87,7 @@ class MainActivity4 : AppCompatActivity() {
 
     private fun encodeBitmapImage(bitmap: Bitmap?) {
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 40, byteArrayOutputStream)
         val bytesofimage = byteArrayOutputStream.toByteArray()
         encodeImageString = Base64.encodeToString(bytesofimage, Base64.DEFAULT)
     }
