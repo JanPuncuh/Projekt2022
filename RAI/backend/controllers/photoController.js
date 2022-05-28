@@ -52,6 +52,8 @@ module.exports = {
      */
     create: function (req, res) {
        // console.log(req.body);
+
+
         var photo = new PhotoModel({
 			image : req.body.upload,
 			username : req.body.username,
@@ -65,6 +67,14 @@ module.exports = {
                     error: err
                 });
             }
+
+            const { spawn } = require('child_process');
+            const pyProg = spawn('python', ['script.py']);
+
+             pyProg.stdout.on('data', function(data) {
+             console.log(data.toString());
+            });
+
 
             return res.status(201).json(photo);
         });

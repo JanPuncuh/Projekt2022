@@ -2,6 +2,10 @@ import cv2
 import numpy as np
 import math
 import os
+import fnmatch
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
 
 
 # import tensorflow as tf
@@ -64,7 +68,7 @@ def LBP(img):
     result = Histogram(imgLBP)
     result = result.astype(int)
 
-    return result, imgLBP
+    return result
 
 
 def HOG(img):
@@ -193,8 +197,16 @@ def mergeLBPandHOG(LBP, HOG):
     return np.concatenate((LBP, HOG))
 
 
+def LBPHOG(img):
+    imgLBP = LBP(img)
+    imgHOG = HOG(img)
+    result = mergeLBPandHOG(imgLBP, imgHOG)
+
+    return result
+
+
 def saveFaceToDataset():
-    filename = './dataset/Jan' + str(len(os.listdir('./dataset/'))) + '.jpg'
+    filename = './dataset/Rene' + str(len(os.listdir('./dataset/'))) + '.jpg'
 
     # print(len(os.listdir('./dataset/')))
     # print(filename)
@@ -206,6 +218,49 @@ def saveFaceToDataset():
 
 cascPath = r"haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
+
+# matrika učne množice
+dataset = []
+
+# labele za matriko učne množice
+datasetLabels = []
+
+# za vsak obraz v mapi dataset
+# izračuna značilnice in doda v matriko
+for faceImage in os.listdir('./dataset'):
+    faceImage = "./dataset/" + faceImage
+    img = cv2.imread(faceImage)
+
+    # 0 Jan
+    # 1 Rene
+    if fnmatch.fnmatch(faceImage, '*Jan*'):
+        datasetLabels.append(0)
+    elif fnmatch.fnmatch(faceImage, '*Rene*'):
+        datasetLabels.append(1)
+
+    faceLBPHOG = LBPHOG(img)
+    dataset.append(faceLBPHOG)
+    print("done with image " + faceImage)
+
+# pripravi strojno učenje
+clf = make_pipeline(StandardScaler(), SVC(gamma='auto'))
+clf.fit(dataset, datasetLabels)
+
+# matrika testne množice
+testTrain = []
+
+# vsako testno sliko da v testno množico
+for faceImage in os.listdir(r'C:/Users/janpu/Desktop/train'):
+    test = cv2.imread(r'C:/Users/janpu/Desktop/train/' + faceImage)
+    test = LBPHOG(test)
+    testTrain.append(test)
+
+print(clf.predict(testTrain))
+
+# da ne gre u webcam loop
+debug = True
+if debug:
+    quit()
 
 video_capture = cv2.VideoCapture(0)
 
