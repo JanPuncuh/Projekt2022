@@ -15,7 +15,14 @@ run pip install scikit-learn
 run pip install pandas
 run pip3 install scikit-learn-pipeline-utils
 
+
+run pip3 install scikit-build
+run pip3 install pymongo[srv]
+run pip3 install opencv-python==4.2.0.32
+
+
 COPY . /app
+
 CMD npm start
 
 EXPOSE 3001

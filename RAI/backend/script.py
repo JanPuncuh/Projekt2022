@@ -12,7 +12,7 @@ coll1 = db.photos
 
 
 for document in coll1.find():  #Tukaj z find UUID ki bo podan kot parameter ko se bo klicala ta funckija -> str(document["_id"])
-    string = bytes(document["image"]).encode("utf-8")
+    string = bytes(document["image"],encoding='utf-8')
     with open("./train/slikaZaObdelavo.png", "wb") as fh:
         fh.write(base64.standard_b64decode(string))
 
