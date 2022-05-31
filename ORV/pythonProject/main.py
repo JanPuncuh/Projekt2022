@@ -6,6 +6,7 @@ import fnmatch
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
+import facecrop
 
 
 # import tensorflow as tf
@@ -205,19 +206,15 @@ def LBPHOG(img):
     return result
 
 
-def saveFaceToDataset():
-    filename = './dataset/Rene' + str(len(os.listdir('./dataset/'))) + '.jpg'
-
-    # print(len(os.listdir('./dataset/')))
-    # print(filename)
-
-    # če je v bazi manj kot 100 slikc jo shrani
-    if len(os.listdir('./dataset/')) < 300:
-        cv2.imwrite(filename, faceFrame)
-
-
 cascPath = r"haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
+
+# prebere sliko iz diska in v njej najde obraz
+img = cv2.imread(r'C:\Users\janpu\Desktop\Projekt2022\RAI\backend\train\slikaZaObdelavo.png')
+img = facecrop.getFace(img)
+if img is not None:
+    cv2.imshow("test", img)
+    cv2.waitKey(0)
 
 # matrika učne množice
 dataset = []
@@ -259,56 +256,6 @@ for faceImage in os.listdir(r'C:/Users/janpu/Desktop/train'):
 
 print(clf.predict(testTrain))
 
-# da ne gre u webcam loop
-debug = True
-if debug:
-    quit()
-
-video_capture = cv2.VideoCapture(0)
-
-while True:
-    # Capture frame-by-frame
-    ret, frame = video_capture.read()
-
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    faces = faceCascade.detectMultiScale(
-        gray,
-        scaleFactor=1.1,
-        minNeighbors=5,
-        minSize=(30, 30),
-        flags=cv2.CASCADE_SCALE_IMAGE
-    )
-
-    # Draw a rectangle around the faces
-    # for (x, y, w, h) in faces:
-    #    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-    # Display the resulting frame
-    cv2.imshow('Video', frame)
-
-    faceFrame = None
-
-    # če najde obraz ga prikazuje na manjši slikci
-    try:
-        fx = faces[0][0]
-        fy = faces[0][1]
-        fw = faces[0][2]
-        fh = faces[0][3]
-        faceFrame = frame[fy:fy + fh, fx:fx + fw]
-        faceFrame = cv2.resize(faceFrame, (200, 200))
-        cv2.imshow("face", faceFrame)
-    except:
-        print("No face detected")
-
-    if faceFrame is not None:
-        saveFaceToDataset()
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# When everything is done, release the capture
-video_capture.release()
 cv2.destroyAllWindows()
 
 # matrika velikosti slik
@@ -327,7 +274,7 @@ cv2.destroyAllWindows()
 # x
 # clf = makepipeline
 # clf.fit
-# clf.predict(slikca)
+# clf.predict(slikce)
 #
 #
 # hog blocksize je lhka const
