@@ -13,12 +13,9 @@ coll1 = db.photos
 
 for document in coll1.find():  #Tukaj z find UUID ki bo podan kot parameter ko se bo klicala ta funckija -> str(document["_id"])
     string = bytes(document["image"],encoding='utf-8')
-    with open("./train/slikaZaObdelavo.png", "wb") as fh:
+    with open("./train/slikaZaObdelavo.jpg", "wb") as fh:
         fh.write(base64.standard_b64decode(string))
 
-
-if os.path.isfile("./train/slikaZaObdelavo.png"):
-   print("File exists")
 
 import cv2
 import numpy as np
@@ -28,9 +25,17 @@ import fnmatch
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
+import facecrop
+import pickle
+
+img = cv2.imread('./train/slikaZaObdelavo.jpg')
 
 
-# import tensorflow as tf
+img_rotate_90_clockwise = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+cv2.imwrite('./train/slikaZaObdelavo.jpg', img_rotate_90_clockwise)
+
+
+
 
 
 # histogram za sivinsko sliko
@@ -78,7 +83,7 @@ def LBP(img):
                         # print(a[k, l], k, l, i, j)
             # print(binary)
 
-            # stevilka, ki jo bobis od LBG (binary to decimal)
+            # številka, ki jo bobiš od LBG (binary to decimal)
             number = 0
             for m in range(8):
                 number = number + binary[m] * 2 ** np.absolute(m - 7)
@@ -136,7 +141,7 @@ def HOG(img):
 
     # za vsako celico nafila tisto polje iz matrike kotov in gradientov
     for c in range(len(cells)):
-        # cez matriko celice
+        # čez matriko celice
         for i in range(cellsGradients[0].shape[0]):
             for j in range(cellsGradients[0].shape[1]):
                 # perfektna delitev
@@ -154,7 +159,7 @@ def HOG(img):
 
                     # left
                     array[index] = array[index] + cellsGradients[c][i, j] * leftBias
-                    # right (ce kot < 160 je al zadni al prvi)
+                    # right (če kot < 160 je al zadni al prvi)
                     if index + 1 == 9:
                         array[0] = array[0] + cellsGradients[c][i, j] * rightBias
                     else:
@@ -169,7 +174,7 @@ def HOG(img):
     # blocksInRow = (img.shape[0] // cellSize) - 1
     # blocksInColumn = (img.shape[1] // cellSize) - 1
 
-    # polja celic se zdruuijo v polje bloka
+    # polja celic se združijo v polje bloka
     blockArrays = []
     blockArray = None
     for i in range(blockCellsIndexes.shape[0]):
@@ -227,112 +232,65 @@ def LBPHOG(img):
     return result
 
 
-def saveFaceToDataset():
-    filename = './dataset/Rene' + str(len(os.listdir('./dataset/'))) + '.jpg'
 
-    # print(len(os.listdir('./dataset/')))
-    # print(filename)
-
-    # ce je v bazi manj kot 100 slikc jo shrani
-    if len(os.listdir('./dataset/')) < 300:
-        cv2.imwrite(filename, faceFrame)
-
-
-cascPath = r"haarcascade_frontalface_default.xml"
-faceCascade = cv2.CascadeClassifier(cascPath)
+# prebere sliko iz diska in v njej najde obraz
+# img = cv2.imread(r'C:\Users\janpu\Pictures\Camera Roll\WIN_20220602_09_10_46_Pro.jpg')
+# img = facecrop.getFace(img)
+# if img is not None:
+#   cv2.imshow("test", img)
+#   cv2.waitKey(0)
 
 # matrika učne množice
 dataset = []
 
-# labele za matriko učne množice
+with open("modelDataset.dat", "rb") as file:
+    dataset.append(pickle.load( file))
+
+
+if len(dataset) == 0:
+	print("empty")
+
 datasetLabels = []
+with open("modelLabels.dat", "rb") as file:
+    datasetLabels.append(pickle.load( file))
+
+#print("dataset" , (dataset) )
+
+
+#print("labels " , (datasetLabels) )
+# labele za matriko učne množice
+
 
 # za vsak obraz v mapi dataset
 # izračuna značilnice in doda v matriko
-for faceImage in os.listdir('./dataset'):
-    faceImage = "./dataset/" + faceImage
-    img = cv2.imread(faceImage)
-    img = cv2.resize(img, (64, 64))
+# for file in os.listdir('./dataset'):
 
-    # 0 Jan
-    # 1 Rene
-    if fnmatch.fnmatch(faceImage, '*Jan*'):
-        datasetLabels.append(0)
-    elif fnmatch.fnmatch(faceImage, '*Rene*'):
-        datasetLabels.append(1)
-
-    faceLBPHOG = LBPHOG(img)
-    dataset.append(faceLBPHOG)
-    print("done with image " + faceImage)
-
-# pripravi strojno ucenje
-clf = make_pipeline(StandardScaler(), SVC(gamma='auto'))
-clf.fit(dataset, datasetLabels)
-
-# matrika testne mnozice
+# matrika testne množice
 testTrain = []
 
-# vsako testno sliko da v testno mnozico
-for faceImage in os.listdir(r'./train'):
-    print(faceImage)
-    test = cv2.imread(r'./train/' + faceImage)
-    test = cv2.resize(test, (64, 64))
-    test = LBPHOG(test)
-    testTrain.append(test)
+# vsako testno sliko da v testno množico
+for file in os.listdir(r'train'):
+    test = cv2.imread(r'train/' + file)
+
+    # to štrajka
+    if test.shape[0] > 200 and test.shape[1] > 200:
+        test = facecrop.getFace(test)
+
+    if test is not None:
+        test = cv2.resize(test, (64, 64))
+        test = LBPHOG(test)
+        testTrain.append(test)
+
+# pripravi strojno učenje
+# C mora bit od 0.1 do 0.4 za najboljše rezultate
+clf = make_pipeline(StandardScaler(), SVC(gamma='auto', C=0.2))
+clf.fit(dataset[0], datasetLabels[0])
 
 print(clf.predict(testTrain))
 
-# da ne gre u webcam loop
-debug = True
-if debug:
-    quit()
-
-video_capture = cv2.VideoCapture(0)
-
-while True:
-    # Capture frame-by-frame
-    ret, frame = video_capture.read()
-
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    faces = faceCascade.detectMultiScale(
-        gray,
-        scaleFactor=1.1,
-        minNeighbors=5,
-        minSize=(30, 30),
-        flags=cv2.CASCADE_SCALE_IMAGE
-    )
-
-    # Draw a rectangle around the faces
-    # for (x, y, w, h) in faces:
-    #    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-    # Display the resulting frame
-    cv2.imshow('Video', frame)
-
-    faceFrame = None
-
-    # če najde obraz ga prikazuje na manjši slikci
-    try:
-        fx = faces[0][0]
-        fy = faces[0][1]
-        fw = faces[0][2]
-        fh = faces[0][3]
-        faceFrame = frame[fy:fy + fh, fx:fx + fw]
-        faceFrame = cv2.resize(faceFrame, (200, 200))
-        cv2.imshow("face", faceFrame)
-    except:
-        print("No face detected")
-
-    if faceFrame is not None:
-        saveFaceToDataset()
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# When everything is done, release the capture
-video_capture.release()
 cv2.destroyAllWindows()
+
+# pickle dump
 
 # matrika velikosti slik
 
@@ -350,7 +308,7 @@ cv2.destroyAllWindows()
 # x
 # clf = makepipeline
 # clf.fit
-# clf.predict(slikca)
+# clf.predict(slikce)
 #
 #
 # hog blocksize je lhka const

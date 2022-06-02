@@ -12,21 +12,33 @@ module.exports = {
      */
     list: function (req, res) {
         PhotoModel.find(function (err, photos) {
+            const spawn = require('await-spawn')
+            var bl;
+            const main = async () => {
+            try {
+              bl = await spawn('python3', ['script.py'])
+    
+            console.log("tostring " + bl.toString())
+            } catch (e) {
+            console.log("exceptiuon " + e.stderr.toString())
+            }
+            console.log("bl:: " +bl);
+            return res.json(photos);
+
+            }
+
+            
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting photo.',
                     error: err
                 });
             }
-            const { spawn } = require('child_process');
-            const pyProg = spawn('python3', ['script.py']);
-
-             pyProg.stdout.on('data', function(data) {
-             console.log(data.toString());
-            });
-
-            return res.json(photos);
+          
+            main();
+            
         });
+        
     },
 
     /**
@@ -49,6 +61,9 @@ module.exports = {
                 });
             }
 
+
+
+
             return res.json(photo);
         });
     },
@@ -67,6 +82,21 @@ module.exports = {
         });
 
         photo.save(function (err, photo) {
+            const spawn = require('await-spawn')
+            var bl;
+            const main = async () => {
+            try {
+              bl = await spawn('python3', ['script.py'])
+    
+            console.log("tostring " + bl.toString())
+            } catch (e) {
+            console.log("exceptiuon " + e.stderr.toString())
+            }
+            console.log("bl:: " +bl);
+            return res.json(bl.toString());
+
+            }
+
             if (err) {
                 return res.status(500).json({
                     message: 'Error when creating photo',
@@ -74,15 +104,8 @@ module.exports = {
                 });
             }
 
-            const { spawn } = require('child_process');
-            const pyProg = spawn('python3', ['script.py']);
+            main();
 
-             pyProg.stdout.on('data', function(data) {
-             console.log(data.toString());
-            });
-
-
-            return res.status(201).json(photo);
         });
     },
 

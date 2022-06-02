@@ -7,7 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
-import android.view.View
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
@@ -16,8 +16,6 @@ import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.projektnpo.databinding.ActivityMain2Binding
-import com.example.projektnpo.databinding.ActivityMain3Binding
 import com.example.projektnpo.databinding.ActivityMain4Binding
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -27,7 +25,6 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import java.io.ByteArrayOutputStream
 import java.util.*
-import kotlin.collections.HashMap
 
 
 class MainActivity4 : AppCompatActivity() {
@@ -85,12 +82,22 @@ class MainActivity4 : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun encodeBitmapImage(bitmap: Bitmap?) {
+   private fun encodeBitmapImage(bitmap: Bitmap) {
+        val resizedBitmap = Bitmap.createScaledBitmap(
+            bitmap, 2700, 2100, false
+        )
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 40, byteArrayOutputStream)
+        resizedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream)
         val bytesofimage = byteArrayOutputStream.toByteArray()
         encodeImageString = Base64.encodeToString(bytesofimage, Base64.DEFAULT)
     }
+  // ČE BOJO PROBLEMI TUKAJ SPREMENIMA REZOLUCJIO ČE BO TIMEOUT
+   /* private fun encodeBitmapImage(bitmap: Bitmap?) {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap!!.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream)
+        val bytesofimage = byteArrayOutputStream.toByteArray()
+        encodeImageString = Base64.encodeToString(bytesofimage, Base64.DEFAULT)
+    }*/
 
     private fun uploaddatatodb() {
         val request: StringRequest = object : StringRequest(
@@ -98,13 +105,25 @@ class MainActivity4 : AppCompatActivity() {
             Response.Listener { response ->
              //   img!!.setImageResource(R.drawable.ic_launcher_foreground)
                // Toast.makeText(applicationContext, response, Toast.LENGTH_LONG).show()
+                var x = response.substring(2, 3)
+                if((id == "Vrbko" && x == "1") || (id == "Jann" && x == "0") ){
+                    Toast.makeText(this@MainActivity4, "Pozdravljen ${id}", Toast.LENGTH_SHORT).show();
+                    Log.d(
 
+                        "SlikaGood",
+                        "Response is: ${x} +   id   + ${id}"
+                    )
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("user_id", id);
+                    intent.putExtra("uuid", uniqueID);
+                    startActivity(intent)
+                    finish()
 
-                val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("user_id", id);
-                intent.putExtra("uuid", uniqueID);
-                startActivity(intent)
-                finish()
+                }
+                else{
+                    Toast.makeText(this@MainActivity4, "Nepravilna prijava", Toast.LENGTH_SHORT).show();
+                }
+
             },
             Response.ErrorListener { error ->
                 Toast.makeText(
