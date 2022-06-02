@@ -207,8 +207,8 @@ def LBPHOG(img):
     return result
 
 
-cascPath = r"haarcascade_frontalface_default.xml"
-faceCascade = cv2.CascadeClassifier(cascPath)
+#cascPath = r"haarcascade_frontalface_default.xml"
+#faceCascade = cv2.CascadeClassifier(cascPath)
 
 # prebere sliko iz diska in v njej najde obraz
 # img = cv2.imread(r'C:\Users\janpu\Pictures\Camera Roll\WIN_20220602_09_10_46_Pro.jpg')
@@ -257,7 +257,6 @@ testTrain = []
 for file in os.listdir(r'C:/Users/janpu/Desktop/Projekt2022/ORV/pythonProject/train'):
     test = cv2.imread(r'C:/Users/janpu/Desktop/Projekt2022/ORV/pythonProject/train/' + file)
 
-    # to štrajka
     if test.shape[0] > 200 and test.shape[1] > 200:
         test = facecrop.getFace(test)
 
@@ -270,8 +269,11 @@ for file in os.listdir(r'C:/Users/janpu/Desktop/Projekt2022/ORV/pythonProject/tr
 # C mora bit od 0.1 do 0.4 za najboljše rezultate
 clf = make_pipeline(StandardScaler(), SVC(gamma='auto', C=0.2))
 clf.fit(dataset, datasetLabels)
-with open("dataset", "wb") as file:
+with open("model.dat", "wb") as file:
     pickle.dump(clf, file)
+
+with open("modelLabels.dat", "wb") as file:
+    pickle.dump(datasetLabels, file)
 print(clf.predict(testTrain))
 
 cv2.destroyAllWindows()
