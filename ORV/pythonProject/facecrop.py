@@ -5,10 +5,10 @@ def getFace(img):
     cascPath = r"haarcascade_frontalface_default.xml"
     faceCascade = cv2.CascadeClassifier(cascPath)
 
-    img = cv2.resize(img, (img.shape[1] // 8, img.shape[0] // 8))
+    #img = cv2.resize(img, (img.shape[1] // 8, img.shape[0] // 8))
 
-    if img.shape[1] > img.shape[0]:
-        img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    #if img.shape[1] > img.shape[0]:
+    #    img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -39,6 +39,6 @@ def getFace(img):
         # cv2.waitKey(0)
     except:
         print("No face detected")
-        cv2.waitKey(0)
+        return None
 
     return faceFrame
