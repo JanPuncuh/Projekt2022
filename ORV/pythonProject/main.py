@@ -227,32 +227,37 @@ dataset = []
 # labele za matriko učne množice
 datasetLabels = []
 
-# za vsak obraz v mapi dataset
-# izračuna značilnice in doda v matriko
-# for file in os.listdir('./dataset'):
-for (root, dir, files) in os.walk('.\dataset'):
-    label = -1
-    for directory in dir:
-        # print('./dataset/' + directory)
-        label = label + 1
-        for file in os.listdir('./dataset/' + directory + '/'):
-            # print(label, "./dataset/" + directory + "/" + file)
-            filename = "./dataset/" + directory + "/" + file
 
-            img = cv2.imread(filename)
-            img = cv2.resize(img, (64, 64))
+with open("modelDataset.dat", "rb") as file:
+    dataset.append(pickle.load(file))
 
-            # 0 Jan
-            # 1 Rene
-            # if fnmatch.fnmatch(file, '*Jan*'):
-            #    datasetLabels.append(0)
-            # elif fnmatch.fnmatch(file, '*Rene*'):
-            #    datasetLabels.append(1)
+with open("modelLabels.dat", "rb") as file:
+    datasetLabels.append(pickle.load(file))
 
-            faceLBPHOG = LBPHOG(img)
-            dataset.append(faceLBPHOG)
-            datasetLabels.append(label)
-            print("done with image " + file)
+if len(dataset) == 0:
+    # za vsak obraz v mapi dataset
+    # izračuna značilnice in doda v matriko
+    # for file in os.listdir('./dataset'):
+    for (root, dir, files) in os.walk('.\dataset'):
+        label = -1
+        for directory in dir:
+            # print('./dataset/' + directory)
+            label = label + 1
+            for file in os.listdir('./dataset/' + directory + '/'):
+                # print(label, "./dataset/" + directory + "/" + file)
+                filename = "./dataset/" + directory + "/" + file
+                img = cv2.imread(filename)
+                img = cv2.resize(img, (64, 64))
+                # 0 Jan
+                # 1 Rene
+                # if fnmatch.fnmatch(file, '*Jan*'):
+                #    datasetLabels.append(0)
+                # elif fnmatch.fnmatch(file, '*Rene*'):
+                #    datasetLabels.append(1)
+                faceLBPHOG = LBPHOG(img)
+                dataset.append(faceLBPHOG)
+                datasetLabels.append(label)
+                print("done with image " + file)
 
 # matrika testne množice
 testTrain = []
@@ -272,17 +277,7 @@ for file in os.listdir(r'C:/Users/janpu/Desktop/Projekt2022/ORV/pythonProject/tr
 # pripravi strojno učenje
 # C mora bit od 0.1 do 0.4 za najboljše rezultate
 clf = make_pipeline(StandardScaler(), SVC(gamma='auto', C=0.2))
-clf.fit(dataset, datasetLabels)
-
-
-with open("model.dat", "wb") as file:
-    pickle.dump(clf, file)
-
-with open("modelDataset.dat", "wb") as file:
-    pickle.dump(dataset, file)
-
-with open("modelLabels.dat", "wb") as file:
-    pickle.dump(datasetLabels, file)
+clf.fit(dataset[0], datasetLabels[0])
 
 print(clf.predict(testTrain))
 
