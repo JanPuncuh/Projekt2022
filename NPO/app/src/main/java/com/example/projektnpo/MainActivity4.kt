@@ -82,7 +82,7 @@ class MainActivity4 : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-   private fun encodeBitmapImage(bitmap: Bitmap) {
+  /* private fun encodeBitmapImage(bitmap: Bitmap) {
         val resizedBitmap = Bitmap.createScaledBitmap(
             bitmap, 2700, 2100, false
         )
@@ -90,14 +90,14 @@ class MainActivity4 : AppCompatActivity() {
         resizedBitmap!!.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream)
         val bytesofimage = byteArrayOutputStream.toByteArray()
         encodeImageString = Base64.encodeToString(bytesofimage, Base64.DEFAULT)
-    }
+    }*/
   // ČE BOJO PROBLEMI TUKAJ SPREMENIMA REZOLUCJIO ČE BO TIMEOUT
-   /* private fun encodeBitmapImage(bitmap: Bitmap?) {
+    private fun encodeBitmapImage(bitmap: Bitmap?) {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap!!.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream)
         val bytesofimage = byteArrayOutputStream.toByteArray()
         encodeImageString = Base64.encodeToString(bytesofimage, Base64.DEFAULT)
-    }*/
+    }
 
     private fun uploaddatatodb() {
         val request: StringRequest = object : StringRequest(
