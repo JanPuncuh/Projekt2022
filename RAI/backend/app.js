@@ -15,7 +15,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error'))
 var usersRouter = require('./routes/userRoutes');
 var cestaRouter = require('./routes/CestaRoutes');
 var photoRouter = require('./routes/photoRoutes');
-
+var app = express();
 
 
 // view engine setup
